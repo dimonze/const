@@ -1,0 +1,143 @@
+detect_relations: false
+options:
+  type: InnoDB
+  collate: utf8_general_ci
+  charset: utf8
+
+Users:
+  columns:
+    id:
+      type: integer(4)
+      unsigned: true
+      primary: true
+      autoincrement: true
+    user:
+      type: string(100)
+      notnull: true
+    password:
+      type: string(64)
+      notnull: true  
+    role:
+      type: string(100)
+      notnull: true
+    hp_user:
+      type: string(100)
+      notnull: true
+    hp_password:
+      type: string(64)
+      notnull: true  
+    description: text    
+  
+Env:
+  columns:
+    id:
+      type: integer(4)
+      unsigned: true
+      primary: true
+      autoincrement: true
+    access_vm:
+      type: string(100)
+      notnull: true
+    env_name:
+      type: string(100)
+      notnull: true
+    hosted_on:
+      type: string(100)
+      notnull: true
+    description: text
+    owner:
+      type: string(100)
+      notnull: true
+  relations:
+    Parent:
+      class: Vms
+      local: id
+      foreign: access_vm_id
+      foreignAlias: Envs
+      type: one
+      foreignType: many
+      onDelete: cascade
+      
+Vms:
+  columns:
+    id:
+      type: integer(4)
+      unsigned: true
+      primary: true
+      autoincrement: true
+    access_vm_id:
+      type: string(100)
+      notnull: true
+    vm_name:
+      type: string(100)
+      notnull: true
+    vm_ip:
+      type: string(100)
+      notnull: true  
+    vm_os:
+      type: string(15)
+      notnull: false  
+    description: text
+    owner:
+      type: string(100)
+      notnull: true    
+      
+Actions:
+  columns:
+    id:
+      type: integer(4)
+      unsigned: true
+      primary: true
+      autoincrement: true
+    action_name:
+      type: string(100)
+      notnull: true      
+    description: text
+    owner:
+      type: string(100)
+      notnull: true
+
+Temlates:
+  columns:
+    id:
+      type: integer(4)
+      unsigned: true
+      primary: true
+      autoincrement: true
+    temlate_name:
+      type: string(100)
+      notnull: true      
+    description: text
+    owner:
+      type: string(100)
+      notnull: true
+
+Cron_task:
+  columns:
+    id:
+      type: integer(4)
+      unsigned: true
+      primary: true
+      autoincrement: true
+    task_name:
+      type: string(100)
+      notnull: true      
+    description: text
+    owner:
+      type: string(100)
+      notnull: true
+
+Current_state:
+  columns:
+    id:
+      type: integer(4)
+      unsigned: true
+      primary: true
+      autoincrement: true
+    session_name:
+      type: string(100)
+      notnull: true      
+    description: text
+    owner:
+      type: string(100)
+      notnull: true      
