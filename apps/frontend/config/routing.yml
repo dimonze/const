@@ -5,6 +5,18 @@
 homepage:
   url:   /
   param: { module: page, action: index }
+  
+env:
+  url:   /env/:usuer_name/
+  param: { module: env, action: index }
+  
+vms:
+  url:   /vms/:env_name/
+  param: { module: vms, action: index }
+
+actions:
+  url:   /actions/:usuer_name/
+  param: { module: actions, action: index }
 
 # generic rules
 # please, remove them by adding more specific rules

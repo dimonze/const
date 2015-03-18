@@ -12,5 +12,13 @@ class ActionsForm extends BaseActionsForm
 {
   public function configure()
   {
+    $this->setWidget('sample_act', new sfWidgetFormTextarea(array(), array(
+                'cols' => 200,
+                'rows' => 20)));
+    
+    $this->setValidator('sample_act', new sfValidatorString(array(
+      'required' => false,
+      'empty_value' => null
+    )));
   }
 }

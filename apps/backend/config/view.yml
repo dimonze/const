@@ -12,7 +12,9 @@ default:
     #language:     en
     #robots:       index, follow
 
-  stylesheets:    [main.css]
+  stylesheets:
+    - main.css
+    - backend.css: {position: last}    
 
   javascripts:    []
 

@@ -44,12 +44,12 @@ Env:
     hosted_on:
       type: string(100)
       notnull: true
-    description: text
+    descr: text
     owner:
       type: string(100)
       notnull: true
   relations:
-    Parent:
+    Vms:
       class: Vms
       local: id
       foreign: access_vm_id
@@ -81,6 +81,15 @@ Vms:
     owner:
       type: string(100)
       notnull: true    
+#  relations:
+#    Env:
+#      class: Env
+#      local: access_vm_id
+#      foreign: id
+#      foreignAlias: Vms
+#      type: many
+#      foreignType: one
+#      onDelete: cascade
       
 Actions:
   columns:
@@ -93,11 +102,12 @@ Actions:
       type: string(100)
       notnull: true      
     description: text
+    sample_act: text
     owner:
       type: string(100)
       notnull: true
 
-Temlates:
+Templates:
   columns:
     id:
       type: integer(4)
