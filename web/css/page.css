@@ -1,115 +1,60 @@
-.left_pain_vms {
+#selectable .ui-selected { background: #F39814; color: white; }
+#selectable { list-style-type: none; margin: 0; padding: 0; }
+#selectable li { margin: 1px; padding: 0.2em; font-size: 1.1em; height: 17px; }
+
+#selectableVm .ui-selected { background: #F39814; color: white; }
+#selectableVm { list-style-type: none; margin: 0; padding: 0; }
+#selectableVm li { margin: 1px; padding: 0.2em; font-size: 1.1em; height: 17px; }
+
+#selectableActions .ui-selected { background: #F39814; color: white; }
+#selectableActions { list-style-type: none; margin: 0; padding: 0; }
+#selectableActions li { margin: 1px; padding: 0.2em; font-size: 1.1em; height: 17px; }
+
+#envMenu {
+  width: 11%;
+  position: fixed; 
+  top: 20px;
+  right: 0px;
+}
+
+#vmMenu {
+  width: 16%;
+  //position: fixed; 
+  top: 20px;
+  left: 0px;
+}
+
+#actions {
+  width: 10%;
+  position: absolute; 
+  top: 60px;
+  left: 350px;
+}
+
+.start {
+  //width: 10%;
+  position: absolute; 
+  top: 60px;
+  left: 600px;
+}
+
+#loadingmessage {
+  //width: 10%;
+  position: absolute; 
+  top: 90px;
+  left: 600px;
+}
+
+.output{
+  position: absolute; 
+  top: 60px;
+  left: 725px;
+}
+
+#options {
   width: 200px;
-  position: fixed;
-  top: 0%;
-  right: 1%;
-  font-size: 62.5%;
+  position: absolute; 
+  top: auto;
+  left: auto;
+  margin: 5px;
 }
-
-.left_pain_actions {
-  width: 200px;
-  position: fixed;
-  top: 0%;
-  right: 250px;
-  font-size: 62.5%;
-}
-
-.ui-widget-header {
-  text-transform: uppercase;
-  font-family: 'TradeGothicLTStd-BdCn20','PT Sans Narrow';
-}
-
-.ui-widget-header {
-  text-transform: uppercase;
-  font-family: 'TradeGothicLTStd-BdCn20','PT Sans Narrow';
-}
-
-#work_area {
-  //font-size: 82.5%;
-}
-
-.vms_act{
-  background-color: #ddd;
-  position: relative;
-}
-
-.vms_act:hover {
-  background-color: #eee;
-}
-
-li{ 
-  list-style-type: none;    
-}
-ul {
-  counter-reset: list 0; 
-  margin-left: 0; /* Отступ слева в браузере IE и Opera */
-  padding-left: 0; /* Отступ слева в браузере Firefox, Safari, Chrome */
-  padding: 0; 
-  margin: 0;
-}
-
-ol {
-  counter-reset: list 0; 
-  margin-left: 5px; /* Отступ слева в браузере IE и Opera */
-  padding-left: 5px; /* Отступ слева в браузере Firefox, Safari, Chrome */
-  margin-right: 5px; /* Отступ слева в браузере IE и Opera */
-  padding-right: 5px; /* Отступ слева в браузере Firefox, Safari, Chrome */
-}
-
-.rectangle-list li {
-  position: relative;
-  display: block;
-  padding: .4em .4em .4em .8em;
-  *padding: .4em;
-  margin: .5em 0 .5em 2.5em;
-  background: #ddd;
-  color: #444;
-  text-decoration: none;
-  -webkit-transition: all .3s ease-out;
-  -moz-transition: all .3s ease-out;
-  -ms-transition: all .3s ease-out;
-  -o-transition: all .3s ease-out;
-  transition: all .3s ease-out;	
-}
-
-.rectangle-list li:hover {
-  background: #eee;
-}	
-
-.rectangle-list li:before {
-  content: counter(list); 
-  counter-increment: list;   
-  position: absolute;	
-  left: -2.5em;
-  top: 50%;
-  margin-top: -1em;
-  background: #ddd;
-  height: 2em;
-  width: 2em;
-  line-height: 2em;
-  text-align: center;
-  font-weight: bold;
-}
-
-.rectangle-list li:after {
-  position: absolute;	
-  content: '';
-  border: .5em solid transparent;
-  left: -1em;
-  top: 50%;
-  margin-top: -.5em;
-  -webkit-transition: all .3s ease-out;
-  -moz-transition: all .3s ease-out;
-  -ms-transition: all .3s ease-out;
-  -o-transition: all .3s ease-out;
-  transition: all .3s ease-out;				
-}
-
-.rectangle-list li:hover:after {
-  left: -.5em;
-  border-left-color: #fa8072;				
-}
-
-/*.ui-accordion-content::-webkit-scrollbar {
- display: none;
-}*/

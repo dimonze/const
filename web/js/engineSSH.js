@@ -1,49 +1,112 @@
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+$(function () {
+  $('#selectable').bind("mousedown", function (e) {
+    e.metaKey = false;
+  }).selectable({
+    stop: function (event, ui) {
+      $(event.target).children('.ui-selected').not(':first').removeClass('ui-selected');
+    }
+  });
+  $("#selectable").on("selectablestart", function (event, ui) {
+    event.originalEvent.ctrlKey = false;
+  });
 
-jQuery(function() {
-  jQuery(function() {
-    jQuery("#list_vms").accordion();
-    jQuery("#list_vms li").draggable({
-      appendTo: "body",
-      helper: "clone"
-    });
-    jQuery("#list_actions").accordion();
-    jQuery("#list_actions li").draggable({
-      appendTo: "body",
-      helper: "clone"
-    });
-    jQuery("#work_area ol").droppable({
-      activeClass: "ui-state-default",
-      hoverClass: "ui-state-hover",
-      accept: ":not(.ui-sortable-helper):not(#act)",
-      drop: function(event, ui) {
-        jQuery(this).find(".placeholder").remove();
-        jQuery("<li id="+ ui.draggable[0].children[0].id +"></li>").text(ui.draggable.text()).appendTo(this);
-        //console.log(ui.draggable[0].children[0].id);
+  $('#selectable li').click(function (event) {
+    var _text = $(event.target).attr('id');
+
+    var list = $("#selectableVm").find('li').show();
+    $("#selectableVm li").removeClass("ui-selected");
+    $('.start').hide();
+    $("#options").hide();
+    $("#selectableActions").hide();
+    $('.output').hide();
+    list.each(function (key, value) {
+      var _txt = $(value).attr("id");
+      if (_txt !== _text) {
+        $(value).hide();
+        $("#selectableActions li").each(function (key, value) {
+
+          $(value).hide();
+
+        });
       }
     });
   });
 
-//  jQuery.getJSON('env', function(data) {
-//    jQuery.each(data, function(index, value) {
-//      //jQuery("#list_vms").append('<h2><a href="#">' + index + '</a></h2><div><ul>');
-//      jQuery.getJSON('vms?env_id=' + value.id, function(data) {
-//        jQuery.each(data, function(index_vm, value) {
-//         // jQuery("#list_vms ul").append('<li>' + value.vm_name + '</li>');
-//        });
-//      });
-//      //jQuery("#list_vms").append('</ul></div>');
-//    });
-//  });
-//
-//  jQuery.getJSON('actions', function(data) {
-//    jQuery.each(data, function(index, value) {
-//      //jQuery(".left_pain_actions").append('<div class="eaction pos" id="' + index + '">' + index + '</div>');
-//    });
-//  });
+  $('#selectableVm li').click(function (event) {
+    $("#selectableActions li").removeClass("ui-selected");
+    $('.start').hide();
+    $("#options").hide();
+    $("#selectableActions li").each(function (key, value) {
 
+      $(value).show();
+      $("#selectableActions").show();
+
+    });
+  });
+
+  $('#selectableVm').bind("mousedown", function (e) {
+    e.metaKey = false;
+  }).selectable({
+    stop: function (event, ui) {
+      $(event.target).children('.ui-selected').not(':first').removeClass('ui-selected');
+    }
+  });
+  $("#selectableVm").on("selectablestart", function (event, ui) {
+    event.originalEvent.ctrlKey = false;
+  });
+
+  $('#selectableActions').bind("mousedown", function (e) {
+    e.metaKey = false;
+  }).selectable({
+    stop: function (event, ui) {
+      $(event.target).children('.ui-selected').not(':first').removeClass('ui-selected');
+    }
+  });
+  $("#selectableActions").on("selectablestart", function (event, ui) {
+    event.originalEvent.ctrlKey = false;
+  });
+
+  $('#selectableActions li').click(function (event, ui) {
+    $('.start').show();
+    if ($(event.target).val() === 1) {
+      $.get("/parameters/index?params_type=" + $(event.target).attr("id"), function (data) {
+        $("#options").html(data);
+        $("#options").show();
+      });
+    } else {
+      $("#options").hide();
+    }
+
+  });
+
+  $(".start").click(function () {
+    $('#loadingmessage').show();
+    var host = $('#selectableVm').find('.ui-selected').attr('id');
+    var port = 122 + $('#selectableVm').find('.ui-selected').attr('name');
+    var user = "root";
+    var pass = "installed";
+    var type = "typical";
+    var gwhost = "";
+    var dpshost = "";
+    var actions = $('#selectableActions').find('.ui-selected').attr('id');
+    var ostype = 0;
+    
+    var $inputs = $('#option :input');
+    var options = {};
+    $inputs.each(function () {
+      options[this.name] = $(this).val();
+    });
+    console.log(options);
+    $.post('/exec/', {accessVmHost: host, accessVmPort: port,
+      accessVmUser: user, accessVmPass: pass, instType: type, gwHost: gwhost,
+      dpsHost: dpshost, actions: actions, windows: ostype, options: options}, 
+    function (data)
+    {
+      $('.output').html(data);
+      $('#loadingmessage').hide();
+    });
+    $('.output').show();
+
+  });
 });
+

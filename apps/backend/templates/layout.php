@@ -22,6 +22,9 @@
       <li<?= $sf_params->get('module') == 'actions' ? ' class="current"' : '' ?>>
         <?= link_to('Действия', '@actions') ?>
       </li>
+      <li<?= $sf_params->get('module') == 'actions' ? ' class="current"' : '' ?>>
+        <?= link_to('Параметры', '@parameters') ?>
+      </li>
       <li<?= $sf_params->get('module') == 'templates' ? ' class="current"' : '' ?>>
         <?= link_to('Шаблоны', '@templates') ?>
       </li>

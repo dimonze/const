@@ -10,7 +10,7 @@ class defaultActions extends sfActions
     foreach ($this->_users as $value)
     {
       $auth[$value->user] = array(
-        'pass' => $value->password, 'credentials' => array('admin'), 'suptype' => null);
+        'pass' => $value->password, 'credentials' => $value->role, 'suptype' => null);
     }
     
     $this->_failed = false;

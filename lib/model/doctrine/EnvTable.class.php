@@ -16,5 +16,21 @@ class EnvTable extends Doctrine_Table
   public static function getInstance()
   {
     return Doctrine_Core::getTable('Env');
-  }  
+  }
+
+  public function findSpecificEnv($user)
+  {
+    return $this->createQuery('us')
+                    ->where(('us.owner LIKE ?'), $user)
+                    ->execute();
+  }
+  
+  public function findEnvWithVms($user)
+  {
+    return $this->createQuery('us')
+                    ->where(('us.owner LIKE ?'), $user)
+                    ->innerJoin('us.Vms v ON v.access_vm_id = access_vm')            
+                    ->execute();
+  }
+
 }

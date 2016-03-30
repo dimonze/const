@@ -10,13 +10,46 @@
  */
 class cron_taskActions extends sfActions
 {
- /**
-  * Executes index action
-  *
-  * @param sfRequest $request A request object
-  */
+
+  /**
+   * Executes index action
+   *
+   * @param sfRequest $request A request object
+   */
   public function executeIndex(sfWebRequest $request)
   {
-    $this->forward('default', 'module');
+    //
+        // Remember the current dir and change it to sf root
+    $currentDir = getcwd();
+    chdir(sfConfig::get('sf_root_dir'));
+
+// Instantiate the task and run it
+    $task = new updateEnvsTask($this->dispatcher, new sfFormatter());
+    $rc = $task->run(array(), array('users' => $request["user"]));
+  
+
+// Restore original environment, change back to original directory
+// Switch the context back to where it was
+    chdir($currentDir);
+    sfContext::switchTo('frontend');
+    $this->redirect('homepage');
   }
+
+  public function updateTask($user)
+  {
+    // Remember the current dir and change it to sf root
+    $currentDir = getcwd();
+    chdir(sfConfig::get('sf_root_dir'));
+
+// Instantiate the task and run it
+    $task = new updateEnvsTask($this->dispatcher, new sfFormatter());
+    $rc = $task->run(array('users' => $user));
+    
+
+// Restore original environment, change back to original directory
+// Switch the context back to where it was
+    //chdir($currentDir);
+   // sfContext::switchTo('AppName');
+  }
+
 }

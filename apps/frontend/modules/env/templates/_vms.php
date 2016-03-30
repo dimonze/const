@@ -2,7 +2,7 @@
   <h1 class="ui-widget-header">VMs</h1>
   <div id="list_vms">
     <?php foreach ($envArr as $key => $value): ?>
-    <h2><a href="#"><?= $key ?></a></h2>
+    <h2><?= $key ?></h2>
     <div>
       <ul class="rectangle-list">
         

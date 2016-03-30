@@ -9,6 +9,9 @@
     <?php include_javascripts() ?>
   </head>
   <body>
-    <?php echo $sf_content ?>
+    <a href="<?= url_for2('default', array('action' => 'logout')) ?>">Выход</a> ***
+    <a href="<?= url_for2('Cron_task', array('action' => 'index')) ?>">Re-index</a>
+    <h4>Username:  <?= sfContext::getInstance()->getUser()->getAttribute("username") ?></h4>    
+    <?php echo $sf_content ?>    
   </body>
 </html>

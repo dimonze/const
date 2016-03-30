@@ -6,6 +6,11 @@ prod:
     no_script_name:         true
     logging_enabled:        false
 
+user:
+  class: myUser
+  param:
+    timeout: 0
+
 dev:
   .settings:
     error_reporting:        <?php echo (E_ALL | E_STRICT)."\n" ?>

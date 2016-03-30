@@ -57,7 +57,7 @@
 /**
  * Include Net_SSH2
  */
-require_once('Net/SSH2.php');
+require_once('..\lib\vendor\ssh\Net/SSH2.php');
 
 /**#@+
  * @access public

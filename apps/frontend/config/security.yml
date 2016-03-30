@@ -3,6 +3,6 @@
 
 default:
   is_secure:   true
-  credentials: admin
+  credentials: [[admin, user]]
   param:
     timeout: 0

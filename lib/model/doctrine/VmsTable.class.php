@@ -7,13 +7,23 @@
  */
 class VmsTable extends Doctrine_Table
 {
-    /**
-     * Returns an instance of this class.
-     *
-     * @return object VmsTable
-     */
-    public static function getInstance()
-    {
-        return Doctrine_Core::getTable('Vms');
-    }
+
+  /**
+   * Returns an instance of this class.
+   *
+   * @return object VmsTable
+   */
+  public static function getInstance()
+  {
+    return Doctrine_Core::getTable('Vms');
+  }
+
+  public function findSpecificVms($user, $accessvm)
+  {
+    return $this->createQuery('us')
+                    ->where(('us.owner LIKE ?'), $user)
+                    ->andWhere(('us.access_vm_id LIKE ?'), $accessvm)
+                    ->execute();
+  }
+
 }

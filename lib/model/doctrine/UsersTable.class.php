@@ -7,13 +7,22 @@
  */
 class UsersTable extends Doctrine_Table
 {
-    /**
-     * Returns an instance of this class.
-     *
-     * @return object UsersTable
-     */
-    public static function getInstance()
-    {
-        return Doctrine_Core::getTable('Users');
-    }
+
+  /**
+   * Returns an instance of this class.
+   *
+   * @return object UsersTable
+   */
+  public static function getInstance()
+  {
+    return Doctrine_Core::getTable('Users');
+  }
+
+  public function findSpecificUsers($users)
+  {
+    return $this->createQuery('us')
+                    ->where(sprintf('us.user in (%s)', '\'' . implode('\', \'', $users). '\''))            
+                    ->execute();
+  }
+
 }

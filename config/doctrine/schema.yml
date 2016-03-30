@@ -23,7 +23,7 @@ Users:
     hp_user:
       type: string(100)
       notnull: true
-    hp_password:
+    full_name:
       type: string(64)
       notnull: true  
     description: text    
@@ -103,6 +103,35 @@ Actions:
       notnull: true      
     description: text
     sample_act: text
+    additional_params:
+      type: boolean
+      notnull: true
+    action_type:
+      type: string(100)
+      notnull: false
+    owner:
+      type: string(100)
+      notnull: true
+      
+Parameters:
+  columns:
+    id:
+      type: integer(4)
+      unsigned: true
+      primary: true
+      autoincrement: true
+    params_name:
+      type: string(100)
+      notnull: true
+    params_value:
+      type: string(1000)
+    params_type: 
+      type: string(100)
+      notnull: true
+    optional:
+      type: int(2)
+      notnull: true
+    description: text
     owner:
       type: string(100)
       notnull: true

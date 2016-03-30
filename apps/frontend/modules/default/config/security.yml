@@ -1,2 +1,2 @@
 config:
-  credentials: admin
+  credentials: [[admin, user]]
