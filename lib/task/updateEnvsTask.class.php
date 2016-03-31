@@ -75,6 +75,7 @@ EOF;
         {
           $vms = new Vms;
           $vms->setAccessVmId($_env["accessvm"]);
+          $vms->setAccessVmAlias($_env["name"]);
           $name = preg_split("/:/", $_vms["host"]);
           $vms->setVmName($name[0]);
           if(preg_match("/\((.*?)\)/", $name[1], $ip)){
@@ -162,7 +163,7 @@ EOF;
       } else if (preg_match_all("/linux/", $result[1][0])) {
         $result[1][0] = "linux";
       }else{
-        $result[1][0] = "unknown";
+        $result[1][0] = "disabled";
       }
 
       $result[1][1] = preg_replace("'<div(.*?)</div>'si", "", $result[1][1]);

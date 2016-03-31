@@ -7,13 +7,41 @@
  */
 class ParametersTable extends Doctrine_Table
 {
-    /**
-     * Returns an instance of this class.
-     *
-     * @return object ParametersTable
-     */
-    public static function getInstance()
-    {
-        return Doctrine_Core::getTable('Parameters');
-    }
+
+  /**
+   * Returns an instance of this class.
+   *
+   * @return object ParametersTable
+   */
+  public static function getInstance()
+  {
+    return Doctrine_Core::getTable('Parameters');
+  }
+
+  public function getOptinalParameters($type)
+  {
+    return $this->createQuery('us')
+                    ->where(('us.params_type LIKE ?'), $type)
+                    ->orWhere('us.params_type LIKE "general"')
+                    ->andWhere('us.optional LIKE 1')
+                    ->execute();
+  }
+  
+  public function getRequiredParameters($type)
+  {
+    return $this->createQuery('us')
+                    ->where(('us.params_type LIKE ?'), $type)
+                    ->orWhere('us.params_type LIKE "general"')
+                    ->andWhere('us.optional LIKE 0')
+                    ->execute();
+  }
+  
+  public function getRequiredParametersWOGeneral($type)
+  {
+    return $this->createQuery('us')
+                    ->where(('us.params_type LIKE ?'), $type)
+                    ->andWhere('us.optional LIKE 0')
+                    ->execute();
+  }
+
 }

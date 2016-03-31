@@ -9,8 +9,10 @@
     <?php include_javascripts() ?>
   </head>
   <body>
-    <a href="<?= url_for2('default', array('action' => 'logout')) ?>">Выход</a> ***
+    *<a href="<?= url_for2('default', array('action' => 'logout')) ?>">Выход</a>*
+    <?php if(sfContext::getInstance()->getUser()->getAttribute("username") == "dhimenes"):?>
     <a href="<?= url_for2('Cron_task', array('action' => 'index')) ?>">Re-index</a>
+    <?php endif;?>    
     <h4>Username:  <?= sfContext::getInstance()->getUser()->getAttribute("username") ?></h4>    
     <?php echo $sf_content ?>    
   </body>

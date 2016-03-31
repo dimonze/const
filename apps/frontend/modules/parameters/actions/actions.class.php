@@ -13,7 +13,11 @@ class parametersActions extends sfActions
   public function executeIndex(sfWebRequest $request)
   {
     $this->forward404Unless($request->getParameter('params_type'));
-    $this->parameterss = Doctrine_Core::getTable('Parameters')->findBy('params_type', $request->getParameter('params_type'));
+    if ($request->getParameter('generalNeeded')) {
+      $this->parameterss = Doctrine::getTable('parameters')->getRequiredParameters($request->getParameter('params_type'));
+    } else {
+      $this->parameterss = Doctrine::getTable('parameters')->getRequiredParametersWOGeneral($request->getParameter('params_type'));
+    }
     $this->paramArray = array();
     foreach ($this->parameterss as $value)
     {

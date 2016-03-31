@@ -1,60 +1,113 @@
 #selectable .ui-selected { background: #F39814; color: white; }
 #selectable { list-style-type: none; margin: 0; padding: 0; }
-#selectable li { margin: 1px; padding: 0.2em; font-size: 1.1em; height: 17px; }
+#selectable li { margin: 1px; padding: 0.2em; font-size: 1.1em; cursor: pointer;}
 
 #selectableVm .ui-selected { background: #F39814; color: white; }
 #selectableVm { list-style-type: none; margin: 0; padding: 0; }
-#selectableVm li { margin: 1px; padding: 0.2em; font-size: 1.1em; height: 17px; }
+#selectableVm li { margin: 1px; padding: 0.2em; font-size: 1.1em; cursor: pointer}
 
 #selectableActions .ui-selected { background: #F39814; color: white; }
 #selectableActions { list-style-type: none; margin: 0; padding: 0; }
-#selectableActions li { margin: 1px; padding: 0.2em; font-size: 1.1em; height: 17px; }
+#selectableActions li { margin: 1px; padding: 0.2em; font-size: 1.1em; cursor: pointer}
 
 #envMenu {
-  width: 11%;
-  position: fixed; 
-  top: 20px;
+  //width: 11%;
+  width: 100%;
+  position: absolute; 
+  //top: 20px;
   right: 0px;
+}
+#envMenu ol {
+    border: 1px solid #555;
+}
+#envMenu li {
+    text-align: center;
+    border-bottom: 1px solid #555;
+}
+#envMenu li:last-child {
+    border-bottom: none;
 }
 
 #vmMenu {
-  width: 16%;
-  //position: fixed; 
-  top: 20px;
+  width: 25%;
+  position: absolute; 
+  //top: 20px;
   left: 0px;
 }
-
-#actions {
-  width: 10%;
-  position: absolute; 
-  top: 60px;
-  left: 350px;
+#vmMenu ol {
+    border: 1px solid #555;
 }
-
+#vmMenu li {
+    text-align: center;
+    border-bottom: 1px solid #555;
+}
+#vmMenu li:last-child {
+    border-bottom: none;
+}
+#actions {
+  width: 25%;
+  position: absolute; 
+  //top: 87px;
+  left: 26%;
+}
+#actions ol {
+    border: 1px solid #555;
+}
+#actions li {
+    text-align: center;
+    border-bottom: 1px solid #555;
+}
+#actions li:last-child {
+    border-bottom: none;
+}
 .start {
   //width: 10%;
   position: absolute; 
-  top: 60px;
-  left: 600px;
+  //top: 87px;
+  left: 52%;
+  cursor: pointer
 }
-
 #loadingmessage {
   //width: 10%;
   position: absolute; 
-  top: 90px;
-  left: 600px;
+  top: 2em;
+  left: 52%;
 }
 
 .output{
   position: absolute; 
-  top: 60px;
-  left: 725px;
+  //top: 60px;
+  //left: 750px;
+}
+#options {
+  //width: 500px;
+  position: absolute;
+  //vertical-align: auto;
+  top: 10em;
+  left: 52%;
+  
+}
+#leftpart {
+  width: 30%;
+  position: absolute;
+  top: 10%;
+}
+#rigtpart {
+  width: 10%;
+  position: absolute;
+  top: 10%;
+  right: 1%;
+}
+#content {
+  width: 100%;
+  position: absolute;
+  top: 9%;
+}
+#centerPart {
+  width: 90%;
+  position: absolute;
+  left: 30%;
 }
 
-#options {
-  width: 200px;
-  position: absolute; 
-  top: auto;
-  left: auto;
-  margin: 5px;
-}
+
+

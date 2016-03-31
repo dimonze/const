@@ -53,20 +53,32 @@ class actionsActions extends sfActions
     $this->accessVmPort = $_POST['accessVmPort'];
     $this->accessVmUser = $_POST['accessVmUser'];
     $this->accessVmPass = $_POST['accessVmPass'];
-    $this->instType = $_POST['instType'];
     $this->gwHost = $_POST['gwHost'];
     $this->dpsHost = $_POST['dpsHost'];
     $this->tempFile = 'd:\tmp\file.tmp';
-    $this->windows = $_POST['windows'];
+    $this->ostype = $_POST['ostype'];
     $this->options = $_POST['options'];
+    if (!array_key_exists("bitLocation", $this->options)) {
+      $this->options['bitLocation'] = NULL;
+    }
+    $this->_output = array();
+    $this->_commands = array();
     $this->errors = NULL;
-    if ($this->windows) {
+    if ($this->ostype == "win32") {
+      if ($this->accessVmUser == "" || $this->accessVmPass == "") {
+        $this->accessVmUser = "Administrator";
+        $this->accessVmPass = "installed";
+      }
       $this->options['OS_TYPE'] = "Win5.2";
       $this->options['bitExt'] = "zip";
       $this->path = "/cygdrive/c/HPBSM";
       $this->extention = "bat";
       $this->tmpFolder = "/cygdrive/c/tmp";
     } else {
+      if ($this->accessVmUser == "" || $this->accessVmPass == "") {
+        $this->accessVmUser = "root";
+        $this->accessVmPass = "installed";
+      }
       $this->options['OS_TYPE'] = "Linux2.6";
       $this->options['bitExt'] = "tar.gz";
       $this->path = "/opt/HP/BSM";
@@ -89,10 +101,29 @@ class actionsActions extends sfActions
 
     $this->act = $this->getAct($this->actions);
     $action = $this->getPreparedAction($this->act);
-    if ($action["edit"]) { $this->editFiles($action["edit"]); }
-    if ($action["upload"]) { $this->uploadFiles($action["upload"]); }
-    if ($action["sshexec"]) { var_dump($this->execCommand($action["sshexec"])); }       
-    //var_dump($action["sshexec"]);
+    if ($action["edit"]) {
+      $this->editFiles($action["edit"]);
+    }
+    if ($action["upload"]) {
+      $this->uploadFiles($action["upload"]);
+    }
+
+    if ($action["sshexec"]) {
+      foreach ($action["sshexec"] as $value)
+      {
+        if (preg_match("/;/", $value[0])) {
+          $this->_commands = preg_split("/;/", $value[0]);
+        } else {
+          $this->_commands[] = $value[0];
+        }
+        $i = 0;
+        foreach ($this->_commands as $val)
+        {
+          $this->_output[$val.$i] = $this->execCommand($val);
+          $i++;
+        }
+      }
+    }
   }
 
   public function getPreparedAction($action)
@@ -102,10 +133,12 @@ class actionsActions extends sfActions
     $output["edit"] = NULL;
     $output["upload"] = NULL;
     $output["sshexec"] = NULL;
+    $textVal = NULL;
     unset($result[count($result) - 1]);
     foreach ($result as $value)
     {
-      $value = $this->updateVariables($value);
+      $value = $this->updateVariables($value, $this->actions);
+      $textVal .= $value;
       switch ($value)
       {
         case!!(preg_match("/_edit/", $value)):
@@ -128,17 +161,24 @@ class actionsActions extends sfActions
           break;
       }
     }
-    foreach ($output["_packageLocationFinal"] as $value)
-    {     
-      if (preg_match("/".$this->options['OMI_VERSION']."/", preg_split('/,/', $value)[1])){
-        $this->options['bitLocation'] = str_replace(array("\r","\n"),"", $this->trimValues(preg_split('/,/', $value)[0]));
-        break;
-      }     
+    if (preg_match("/_packageLocationFinal/", $textVal)) {
+      foreach ($output["_packageLocationFinal"] as $value)
+      {
+
+        if (preg_match("/" . $this->options['VERSION'] . "/", preg_split('/,/', $value)[1])) {
+          $this->options['bitLocation'] = str_replace(array("\r", "\n"), "", $this->trimValues(preg_split('/,/', $value)[0]));
+          break;
+        }
+      }
     }
-    foreach ($output["sshexec"] as $key => $value)
-    {
-      $output["sshexec"][$key] = str_replace(array("\r","\n"),"", $this->trimValues($value));
-      $output["sshexec"][$key] = preg_replace("/%package%/", $this->options['bitLocation'], $output["sshexec"][$key]);
+    if (preg_match("/_sshexec/", $textVal)) {
+      foreach ($output["sshexec"] as $key => $value)
+      {
+        $output["sshexec"][$key] = str_replace(array("\r", "\n"), "", $this->trimValues(array($value)));
+        if (array_key_exists("VERSION", $this->options)) {
+          $output["sshexec"][$key] = preg_replace("/%package%/", $this->options['bitLocation'], $output["sshexec"][$key]);
+        }
+      }
     }
     return $output;
   }
@@ -175,7 +215,7 @@ class actionsActions extends sfActions
     }
   }
 
-  public function uploadFiles(array $whatUpload)
+  public function uploadFiles($whatUpload)
   {
     foreach ($whatUpload as $value)
     {
@@ -183,39 +223,54 @@ class actionsActions extends sfActions
     }
   }
 
-  public function execCommand(array $whatExec)
+  public function execCommand($whatExec)
   {
-    $results = array();
-    foreach ($whatExec as $exec)
-    {
-      $results[] = $this->ssh_ver->exec($exec);
-    }
-    return $results;
+    return $this->ssh_ver->exec($whatExec);
   }
 
   public function trimValues($whatTrim)
   {
     $output = NULL;
-    foreach ($whatTrim as &$val)
+    foreach ((array) $whatTrim as &$val)
     {
       $value = preg_split("/;/", rtrim(preg_replace('/\n/', '', trim($val)), ';'));
       foreach ($value as $str)
       {
-        $output .= trim(preg_replace('/\n', '', $str . ';'), "\n\r");
+        $output .= trim(preg_replace('/\n/', '', $str . ';'), "\n\r");
       }
       $val = $output;
-    }    
+    }
     return $whatTrim;
   }
-  
-  public function updateVariables($whatTrim)
+
+  public function updateVariables($whatTrim, $actionName)
   {
-    $value = preg_replace("/%gwHost%/", $this->gwHost, preg_replace("/%topaz_home%/", $this->path, preg_replace("/%tmp%/", $this->tmpFolder, preg_replace("/%ext%/", $this->extention, $whatTrim))));    
-      foreach ($this->options as $key => $val)
-      {
-        $key = "/%" . $key . "%/";
-        $value = preg_replace($key, $val, $value);
-      }
+    $this->specOptions = Doctrine::getTable('parameters')->getOptinalParameters($actionName);
+    $value = $whatTrim;
+    foreach ($this->specOptions as $opt)
+    {
+      $key = "/%" . $opt->getParamsName() . "%/";
+      $value = preg_replace($key, $this->getOsRelatedOption($opt->getParamsValue()), $value);
+    }
+    foreach ($this->options as $key => $val)
+    {
+      $key = "/%" . $key . "%/";
+      $value = preg_replace($key, $val, $value);
+    }
     return $value;
   }
+
+  public function getOsRelatedOption($option)
+  {
+    $result = NULL;
+    $result = preg_split("/,/", $option);
+
+    foreach ($result as $value)
+    {
+      if (preg_match("/" . $this->ostype . "/", $value)) {
+        return preg_split("/::/", $value)[1];
+      }
+    }
+  }
+
 }

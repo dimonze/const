@@ -12,5 +12,9 @@
  */
 class Vms extends BaseVms
 {
+  public function getShortVMDescr()
+  {
+    return preg_replace("/".$this->getAccessVmAlias()."-/", "", $this->getDescription());
+  }
 
 }

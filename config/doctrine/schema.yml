@@ -68,6 +68,9 @@ Vms:
     access_vm_id:
       type: string(100)
       notnull: true
+    access_vm_alias:
+      type: string(100)
+      notnull: true
     vm_name:
       type: string(100)
       notnull: true
@@ -104,6 +107,9 @@ Actions:
     description: text
     sample_act: text
     additional_params:
+      type: boolean
+      notnull: true
+    without_general_params:
       type: boolean
       notnull: true
     action_type:

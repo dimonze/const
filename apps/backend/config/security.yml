@@ -6,3 +6,9 @@ default:
   credentials: admin
   param:
     timeout: 0
+    
+users:
+  is_secure:   true
+  credentials: superadmin
+  param:
+    timeout: 0

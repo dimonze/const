@@ -3,8 +3,8 @@
       <?php if ($parameters->getOptional() > 0): ?>
         <?php continue; ?>
       <?php endif; ?>      
-        <label><?php echo $parameters->getParamsName() ?> </label>
-        <?php if ($parameters->getParamsValue() != ''): ?>         
+        <label id="lopt"><?php echo $parameters->getParamsName() ?> 
+        <?php if (preg_match("/,/", $parameters->getParamsValue())): ?>         
         <select name="<?= $parameters->getParamsName() ?>">
               <?php foreach (preg_split("/,/", $parameters->getParamsValue()) as $param): ?>
                 <?php if (preg_match("/list/", $param)): ?>
@@ -16,6 +16,7 @@
             </select>          
         <?php else: ?>
           <input name="<?= $parameters->getParamsName() ?>" type="text" />
-        <?php endif; ?>              
+        <?php endif; ?> 
+        </label><br>
     <?php endforeach; ?>
 </form>
