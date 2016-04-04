@@ -1,113 +1,105 @@
-#selectable .ui-selected { background: #F39814; color: white; }
-#selectable { list-style-type: none; margin: 0; padding: 0; }
-#selectable li { margin: 1px; padding: 0.2em; font-size: 1.1em; cursor: pointer;}
+#selectableEnvList .ui-selected { background: #E6E6FA; color: black; }
+#selectableEnvList { list-style-type: none; margin: 0; padding: 0; }
+#selectableEnvList li { margin: 1px; padding: 0.2em; font-size: 1.1em; cursor: pointer;}
 
-#selectableVm .ui-selected { background: #F39814; color: white; }
-#selectableVm { list-style-type: none; margin: 0; padding: 0; }
-#selectableVm li { margin: 1px; padding: 0.2em; font-size: 1.1em; cursor: pointer}
+#selectableVmList .ui-selected { background: #E6E6FA; color: black; }
+#selectableVmList { list-style-type: none; margin: 0; padding: 0; }
+#selectableVmList li { margin: 1px; padding: 0.2em; font-size: 1.1em; cursor: pointer}
 
-#selectableActions .ui-selected { background: #F39814; color: white; }
-#selectableActions { list-style-type: none; margin: 0; padding: 0; }
-#selectableActions li { margin: 1px; padding: 0.2em; font-size: 1.1em; cursor: pointer}
+#selectableActionsList .ui-selected { background: #E6E6FA; color: black; }
+#selectableActionsList { list-style-type: none; margin: 0; padding: 0; }
+#selectableActionsList li { margin: 1px; padding: 0.2em; font-size: 1.1em; cursor: pointer}
 
-#envMenu {
-  //width: 11%;
-  width: 100%;
-  position: absolute; 
-  //top: 20px;
-  right: 0px;
-}
-#envMenu ol {
-    border: 1px solid #555;
-}
-#envMenu li {
-    text-align: center;
-    border-bottom: 1px solid #555;
-}
-#envMenu li:last-child {
-    border-bottom: none;
+
+.content {
+  width: 99%;
+  position: absolute;
+  top: 5em;
+  display: flex;
 }
 
-#vmMenu {
-  width: 25%;
-  position: absolute; 
-  //top: 20px;
-  left: 0px;
-}
-#vmMenu ol {
-    border: 1px solid #555;
-}
-#vmMenu li {
-    text-align: center;
-    border-bottom: 1px solid #555;
-}
-#vmMenu li:last-child {
-    border-bottom: none;
-}
-#actions {
-  width: 25%;
-  position: absolute; 
-  //top: 87px;
-  left: 26%;
-}
-#actions ol {
-    border: 1px solid #555;
-}
-#actions li {
-    text-align: center;
-    border-bottom: 1px solid #555;
-}
-#actions li:last-child {
-    border-bottom: none;
-}
-.start {
-  //width: 10%;
-  position: absolute; 
-  //top: 87px;
-  left: 52%;
+.reindex {
   cursor: pointer
 }
-#loadingmessage {
-  //width: 10%;
-  position: absolute; 
-  top: 2em;
-  left: 52%;
+
+.vmMenu {
+  display: inline-block;
+  position: relative;
+  vertical-align: top;  
 }
+.vmMenu ol {
+  border: 1px solid #555;
+}
+.vmMenu li {
+  text-align: center;
+  border-bottom: 1px solid #555;
+}
+.vmMenu li:last-child {
+  border-bottom: none;
+}
+
+.actions {
+  display: inline-block;
+  position: relative; 
+}
+.actions ol {
+  border: 1px solid #555;
+}
+.actions li {
+  text-align: center;
+  border-bottom: 1px solid #555;
+}
+.actions li:last-child {
+  border-bottom: none;
+}
+
+.start {
+  width: 20px; 
+  height: 20px;
+  float: right;
+  display: none;
+  cursor: pointer
+}
+
+.loadingmessage {
+  display: none; 
+  float: right;
+}
+
+.loadsmall{
+  display: none;
+}
+
+.options {
+  vertical-align: top;
+  display: inline-block;
+  top: 10em;
+}
+
 
 .output{
-  position: absolute; 
-  //top: 60px;
-  //left: 750px;
+  position: relative;
+  left: auto;
+  display: block;
+  margin: 2em;
 }
-#options {
-  //width: 500px;
-  position: absolute;
-  //vertical-align: auto;
-  top: 10em;
-  left: 52%;
-  
-}
-#leftpart {
-  width: 30%;
-  position: absolute;
-  top: 10%;
-}
-#rigtpart {
-  width: 10%;
-  position: absolute;
-  top: 10%;
+
+.rigtpart {
+  position: inherit;
   right: 1%;
-}
-#content {
-  width: 100%;
-  position: absolute;
-  top: 9%;
-}
-#centerPart {
-  width: 90%;
-  position: absolute;
-  left: 30%;
+  top: 0;
 }
 
-
-
+.envMenu {  
+  display: flex;
+}
+.envMenu ol {
+  border: 1px solid #555;
+}
+.envMenu li {
+  text-align: center;
+  border-bottom: 1px solid #555;
+}
+.envMenu li:last-child {
+  border-bottom: none;
+}

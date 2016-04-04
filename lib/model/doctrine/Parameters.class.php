@@ -13,4 +13,27 @@
 class Parameters extends BaseParameters
 {
 
+  public function getParamsValueArray()
+  {
+    $string = preg_split("/,/", $this->getParamsValue());
+    foreach ($string as &$value)
+    {
+      $value = trim($value);
+    }
+    return $string;
+  }
+
+  public function getOsRelatedParams($ostype)
+  {
+    $result = preg_split("/,/", $this->getParamsValue());
+
+    foreach ($result as $value)
+    {
+      if (preg_match("/" . $ostype . "/", $value)) {
+        return preg_split("/::/", $value)[1];
+      }
+    }
+    return $this->getParamsValue();
+  }
+
 }

@@ -18,108 +18,51 @@ class actionsActions extends sfActions
    */
   public function executeIndex(sfWebRequest $request)
   {
-    $this->forward404Unless($this->getUser()->getAttribute('username'));
-    $this->act = $this->getAct($this->getUser()->getAttribute('username'));
-    $this->act_predef = $this->getAct('default');
-    $this->actArr = array();
-    foreach ($this->act as $value)
-    {
-      foreach ($value as $key => $val)
-      {
-        $this->actArr[$value->action_name][$key] = $val;
-      }
-    }
-    foreach ($this->act_predef as $value)
-    {
-      foreach ($value as $key => $val)
-      {
-        $this->actArr[$value->action_name][$key] = $val;
-      }
-    }
-    echo json_encode($this->actArr);
+    
   }
-
-  public function getAct($user)
+  
+  private function initVars($post)
   {
-    return Doctrine::getTable('Actions')->findOneBy('action_name', $user);
-  }
+    $this->sysVars = array_key_exists('systemVariables', $post) ? $post['systemVariables'] : NULL;
+    $this->options = array_key_exists('options', $post) ? $post['options'] : array();
+    $this->specOptions = Doctrine::getTable('parameters')->getOptinalParameters($this->sysVars['action'], $this->sysVars['ostype']);
+    $this->act = Doctrine::getTable('Actions')->findOneBy('action_name', $this->sysVars['action']);
 
-  public function executeRunAct(sfWebRequest $request)
-  {
-    include('../lib/vendor/ssh/Net/SSH2.php');
-    include('../lib/vendor/ssh/Net/SFTP.php');
-    $this->actions = $_POST['actions'];
-    $this->accessVmHost = $_POST['accessVmHost'];
-    $this->accessVmPort = $_POST['accessVmPort'];
-    $this->accessVmUser = $_POST['accessVmUser'];
-    $this->accessVmPass = $_POST['accessVmPass'];
-    $this->gwHost = $_POST['gwHost'];
-    $this->dpsHost = $_POST['dpsHost'];
     $this->tempFile = 'd:\tmp\file.tmp';
-    $this->ostype = $_POST['ostype'];
-    $this->options = $_POST['options'];
-    if (!array_key_exists("bitLocation", $this->options)) {
-      $this->options['bitLocation'] = NULL;
-    }
     $this->_output = array();
+    $this->_outputStr = "";
+    $this->_hideShellString = false;
     $this->_commands = array();
     $this->errors = NULL;
-    if ($this->ostype == "win32") {
-      if ($this->accessVmUser == "" || $this->accessVmPass == "") {
-        $this->accessVmUser = "Administrator";
-        $this->accessVmPass = "installed";
-      }
-      $this->options['OS_TYPE'] = "Win5.2";
-      $this->options['bitExt'] = "zip";
-      $this->path = "/cygdrive/c/HPBSM";
-      $this->extention = "bat";
-      $this->tmpFolder = "/cygdrive/c/tmp";
-    } else {
-      if ($this->accessVmUser == "" || $this->accessVmPass == "") {
-        $this->accessVmUser = "root";
-        $this->accessVmPass = "installed";
-      }
-      $this->options['OS_TYPE'] = "Linux2.6";
-      $this->options['bitExt'] = "tar.gz";
-      $this->path = "/opt/HP/BSM";
-      $this->extention = "sh";
-      $this->tmpFolder = "/tmp";
-    }
-    if (!($this->ssh_ver = new Net_SSH2("$this->accessVmHost", "$this->accessVmPort"))) {
+
+    if (!($this->sftp = new Net_SFTP($this->sysVars['host'], $this->sysVars['port']))) {
       $this->errors .= "Conection intit failed \n" . __LINE__ . __FILE__;
     }
-    if (!($this->ssh_ver->login("$this->accessVmUser", "$this->accessVmPass"))) {
+    if (!($this->sftp->login($this->specOptions['ssh_user_general'], $this->specOptions['ssh_pass_general']))) {
       $this->errors .= "Autentification failed \n" . __LINE__ . __FILE__;
     }
-    if (!($this->sftp = new Net_SFTP("$this->accessVmHost", "$this->accessVmPort"))) {
-      $this->errors .= "Conection intit failed \n" . __LINE__ . __FILE__;
-    }
-    if (!($this->sftp->login("$this->accessVmUser", "$this->accessVmPass"))) {
-      $this->errors .= "Autentification failed \n" . __LINE__ . __FILE__;
-    }
+  }
 
-
-    $this->act = $this->getAct($this->actions);
-    $action = $this->getPreparedAction($this->act);
-    if ($action["edit"]) {
-      $this->editFiles($action["edit"]);
-    }
-    if ($action["upload"]) {
-      $this->uploadFiles($action["upload"]);
-    }
-
-    if ($action["sshexec"]) {
+  public function executeRunAct()
+  {  
+    $test = new sshControl();
+    var_dump($test);
+    $this->initVars(filter_input_array(INPUT_POST));     
+    $action = $this->getPreparedAction($this->act);    
+    if ($action["edit"]) { $this->editFiles($action["edit"]); }
+    if ($action["upload"]) { $this->uploadFiles($action["upload"]); }    
+    if ($action["sshexec"]) { 
+      $i = 0;      
       foreach ($action["sshexec"] as $value)
       {
-        if (preg_match("/;/", $value[0])) {
-          $this->_commands = preg_split("/;/", $value[0]);
-        } else {
-          $this->_commands[] = $value[0];
-        }
-        $i = 0;
+        if (preg_match("/;/", $value[0])) {$this->_commands = preg_split("/;/", $value[0]);} 
+        else { $this->_commands[] = $value[0]; }        
         foreach ($this->_commands as $val)
         {
-          $this->_output[$val.$i] = $this->execCommand($val);
+          if (array_key_exists("_hideShellString", $action)) {
+            $this->_outputStr .= $this->execCommand($val) . "\n";            
+            $this->_hideShellString = true;
+          } else { $this->_output["[" . $this->execCommand("pwd") . "]# " . $val . $i] = $this->execCommand($val); }
           $i++;
         }
       }
@@ -144,6 +87,10 @@ class actionsActions extends sfActions
         case!!(preg_match("/_edit/", $value)):
           preg_match("/\((.+)\)/", $value, $value);
           $output["edit"][] = preg_split("/;/", preg_replace('/(\n+)/', '', $value[1]));
+          break;
+        case!!(preg_match("/_hideShellString/", $value)):
+          preg_match("/\((.+)\)/", $value, $value);
+          $output["_hideShellString"] = true;
           break;
         case!!(preg_match("/_upload/", $value)):
           preg_match('/\((.+)\)/', $value, $value);
@@ -183,12 +130,6 @@ class actionsActions extends sfActions
     return $output;
   }
 
-  public function checkActionType($value)
-  {
-    var_dump($value);
-    var_dump(preg_match("/_upload/", $value));
-  }
-
   public function editFiles(array $whatEdit)
   {
     foreach ($whatEdit as $value)
@@ -225,6 +166,13 @@ class actionsActions extends sfActions
 
   public function execCommand($whatExec)
   {
+    if (!($this->ssh_ver = new Net_SSH2($this->sysVars['host'], $this->sysVars['port']))) {
+      $this->errors .= "Conection intit failed \n" . __LINE__ . __FILE__;
+    }
+    if (!($this->ssh_ver->login($this->specOptions['ssh_user_general'], $this->specOptions['ssh_pass_general']))) {
+      $this->errors .= "Autentification failed \n" . __LINE__ . __FILE__;
+    }
+    
     return $this->ssh_ver->exec($whatExec);
   }
 
@@ -243,34 +191,19 @@ class actionsActions extends sfActions
     return $whatTrim;
   }
 
-  public function updateVariables($whatTrim, $actionName)
-  {
-    $this->specOptions = Doctrine::getTable('parameters')->getOptinalParameters($actionName);
-    $value = $whatTrim;
-    foreach ($this->specOptions as $opt)
+  public function updateVariables($whatTrim)
+  {   
+    foreach ($this->specOptions as $key => $val)
     {
-      $key = "/%" . $opt->getParamsName() . "%/";
-      $value = preg_replace($key, $this->getOsRelatedOption($opt->getParamsValue()), $value);
+      $key = "/%" . $key . "%/";
+      $whatTrim = preg_replace($key, $val, $whatTrim);
     }
     foreach ($this->options as $key => $val)
     {
       $key = "/%" . $key . "%/";
-      $value = preg_replace($key, $val, $value);
+      $whatTrim = preg_replace($key, $val, $whatTrim);
     }
-    return $value;
-  }
-
-  public function getOsRelatedOption($option)
-  {
-    $result = NULL;
-    $result = preg_split("/,/", $option);
-
-    foreach ($result as $value)
-    {
-      if (preg_match("/" . $this->ostype . "/", $value)) {
-        return preg_split("/::/", $value)[1];
-      }
-    }
+    return $whatTrim;
   }
 
 }

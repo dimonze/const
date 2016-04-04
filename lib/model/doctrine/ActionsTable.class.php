@@ -7,13 +7,28 @@
  */
 class ActionsTable extends Doctrine_Table
 {
-    /**
-     * Returns an instance of this class.
-     *
-     * @return object ActionsTable
-     */
-    public static function getInstance()
-    {
-        return Doctrine_Core::getTable('Actions');
+
+  /**
+   * Returns an instance of this class.
+   *
+   * @return object ActionsTable
+   */
+  public static function getInstance()
+  {
+    return Doctrine_Core::getTable('Actions');
+  }
+
+  public function getAvailbleUserAct($user, $includePublic)
+  {
+    if ($includePublic) {
+      return $this->createQuery('a')
+                      ->where(('a.owner LIKE ?'), $user)
+                      ->orWhere('a.public LIKE 1')
+                      ->execute();
+    } else {
+      return $this->createQuery('a')
+                      ->where(('a.owner LIKE ?'), $user)
+                      ->execute();
     }
+  }
 }

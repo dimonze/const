@@ -18,15 +18,22 @@ class ParametersTable extends Doctrine_Table
     return Doctrine_Core::getTable('Parameters');
   }
 
-  public function getOptinalParameters($type)
+  public function getOptinalParameters($type, $osType)
   {
-    return $this->createQuery('us')
-                    ->where(('us.params_type LIKE ?'), $type)
-                    ->orWhere('us.params_type LIKE "general"')
-                    ->andWhere('us.optional LIKE 1')
-                    ->execute();
+    $resArray = array();
+    $res = $this->createQuery('us')
+            ->where(('us.params_type LIKE ?'), $type)
+            ->orWhere('us.params_type LIKE "general"')
+            ->andWhere('us.optional LIKE 1')
+            ->execute();
+    foreach ($res as $value)
+    {
+      $resArray[$value->getParamsName()] = $value->getOsRelatedParams($osType);
+    }
+
+    return $resArray;
   }
-  
+
   public function getRequiredParameters($type)
   {
     return $this->createQuery('us')
@@ -35,7 +42,7 @@ class ParametersTable extends Doctrine_Table
                     ->andWhere('us.optional LIKE 0')
                     ->execute();
   }
-  
+
   public function getRequiredParametersWOGeneral($type)
   {
     return $this->createQuery('us')

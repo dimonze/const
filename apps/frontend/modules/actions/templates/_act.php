@@ -1,13 +1,8 @@
-<div class="left_pain_actions" id="acttions">
-  <h1 class="ui-widget-header">Actions</h1>
-  <div id="list_actions">    
-    <h2><a href="#">General</a></h2>
-    <div>
-      <ul class="rectangle-list">        
-        <?php foreach ($actArr as $key => $val): ?>        
-        <li id="act"><?= $key ?></li>        
-        <?php endforeach; ?>        
-      </ul>
-    </div>      
-  </div>
-</div>
+<ol id="selectableActionsList" > 
+  <?php foreach ($_actions as $action): ?>  
+    <li class="ui-widget-content" id="<?= $action->getActionName() ?>" value="<?= $action->addGenerallParams() ?>"title="<?= $action->getDescription() ?>"><?= $action->getActionName() ?>
+      &nbsp;<img class="start" title="Run" src='./images/play_button.png'/>
+      &nbsp;<img class="loadingmessage" src='./images/ajax-loader_small.gif'/>        
+    </li>
+    <?php endforeach; ?>   
+</ol>

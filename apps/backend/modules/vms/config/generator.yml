@@ -14,7 +14,8 @@ generator:
     config:
       actions: ~
       fields:  ~
-      list:    ~
+      list:    
+        display:            [id, =access_vm_short_name, vm_name, static, owner]
       filter:  ~
       form:    ~
       edit:    ~

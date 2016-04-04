@@ -13,4 +13,14 @@
 class Actions extends BaseActions
 {
 
+  public function addGenerallParams()
+  {
+    $result = 0;
+    if (!$this->getAdditionalParams() && $this->getWithoutGeneralParams()) {
+      return 2;
+    } else {
+      return $this->getAdditionalParams() + $this->getWithoutGeneralParams();
+    }
+  }
+
 }

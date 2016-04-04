@@ -26,37 +26,10 @@ Users:
     full_name:
       type: string(64)
       notnull: true  
+    show_public_actions:
+      type: boolean
+      notnull: true
     description: text    
-  
-Env:
-  columns:
-    id:
-      type: integer(4)
-      unsigned: true
-      primary: true
-      autoincrement: true
-    access_vm:
-      type: string(100)
-      notnull: true
-    env_name:
-      type: string(100)
-      notnull: true
-    hosted_on:
-      type: string(100)
-      notnull: true
-    descr: text
-    owner:
-      type: string(100)
-      notnull: true
-  relations:
-    Vms:
-      class: Vms
-      local: id
-      foreign: access_vm_id
-      foreignAlias: Envs
-      type: one
-      foreignType: many
-      onDelete: cascade
       
 Vms:
   columns:
@@ -65,34 +38,37 @@ Vms:
       unsigned: true
       primary: true
       autoincrement: true
-    access_vm_id:
+    access_vm_full_name:
+      type: string(100)
+    access_vm_short_name:
+      type: string(100)
+    access_vm_ip:
       type: string(100)
       notnull: true
-    access_vm_alias:
+    access_vm_hosted_on:
       type: string(100)
-      notnull: true
+    access_vm_descr: text
     vm_name:
       type: string(100)
       notnull: true
-    vm_ip:
+    vm_host:
       type: string(100)
-      notnull: true  
+    vm_ip:
+      type: string(100) 
+    vm_port:
+      type: integer(4)
     vm_os:
-      type: string(15)
-      notnull: false  
-    description: text
+      type: string(15)  
+    vm_resources: text
+    vm_description: text
+    vm_state: integer(4)
+    vm_snapshots: text
+    static: 
+      type: boolean
+      notnull: true
     owner:
       type: string(100)
-      notnull: true    
-#  relations:
-#    Env:
-#      class: Env
-#      local: access_vm_id
-#      foreign: id
-#      foreignAlias: Vms
-#      type: many
-#      foreignType: one
-#      onDelete: cascade
+      notnull: true   
       
 Actions:
   columns:
@@ -110,6 +86,9 @@ Actions:
       type: boolean
       notnull: true
     without_general_params:
+      type: boolean
+      notnull: true
+    public:
       type: boolean
       notnull: true
     action_type:

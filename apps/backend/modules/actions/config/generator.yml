@@ -13,9 +13,11 @@ generator:
 
     config:
       actions: ~
-      fields:  ~
+      fields:
+         id:                 { label: 'ID' }
       list:    
         object_actions: {_edit: ~}
+        display:            [id, =action_name, sample_act]
       filter:  ~
       form:    ~   
       edit:    

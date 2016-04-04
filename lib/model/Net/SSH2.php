@@ -73,32 +73,32 @@
  *
  * Used to do Diffie-Hellman key exchange and DSA/RSA signature verification.
  */
-require_once('..\lib\vendor\ssh\Math/BigInteger.php');
+require_once('../lib/vendor/ssh/Math/BigInteger.php');
 
 /**
  * Include Crypt_Random
  */
-require_once('..\lib\vendor\ssh\Crypt/Random.php');
+require_once('../lib/vendor/ssh/Crypt/Random.php');
 
 /**
  * Include Crypt_Hash
  */
-require_once('..\lib\vendor\ssh\Crypt/Hash.php');
+require_once('../lib/vendor/ssh/Crypt/Hash.php');
 
 /**
  * Include Crypt_TripleDES
  */
-require_once('..\lib\vendor\ssh\Crypt/TripleDES.php');
+require_once('../lib/vendor/ssh/Crypt/TripleDES.php');
 
 /**
  * Include Crypt_RC4
  */
-require_once('..\lib\vendor\ssh\Crypt/RC4.php');
+require_once('../lib/vendor/ssh/Crypt/RC4.php');
 
 /**
  * Include Crypt_AES
  */
-require_once('..\lib\vendor\ssh\Crypt/AES.php');
+require_once('../lib/vendor/ssh/Crypt/AES.php');
 
 /**#@+
  * Execution Bitmap Masks

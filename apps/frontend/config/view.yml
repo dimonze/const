@@ -6,10 +6,10 @@ default:
     content-type: text/html
 
   metas:
-    #title:        symfony project
+    title:        Construction tools!
     #description:  symfony project
     #keywords:     symfony, project
-    #language:     en
+    language:     en
     #robots:       index, follow
 
   stylesheets:    [main.css]

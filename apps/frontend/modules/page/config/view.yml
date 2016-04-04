@@ -6,4 +6,5 @@ indexSuccess:
     - http://code.jquery.com/jquery-2.1.3.min.js
     - http://code.jquery.com/ui/1.11.4/jquery-ui.js
     - engineSSH.js
-    
+  metas:
+    title:        Construction tools! - Main Page

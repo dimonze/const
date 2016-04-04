@@ -1,0 +1,10 @@
+default:
+  http_metas:
+    content-type: text/html
+
+  metas:
+    title:        Active tasks
+    #description:  symfony project
+    #keywords:     symfony, project
+    #language:     en
+    #robots:       index, follow

@@ -48,41 +48,35 @@ EOF;
     }
     foreach ($this->_users as $user)
     {
-      if($user->full_name == ''){
+      if(strlen($user->full_name) < 3){
         continue;
       }
-      $oldEnv = Doctrine::getTable('Env')->findSpecificEnv($user->user);
-      foreach ($oldEnv as $env)
+      $oldVms = Doctrine::getTable('Vms')->getDynamicVms($user->user);
+      foreach ($oldVms as $vms)
       {
-        $env->delete();
+        $vms->delete();
       }
       $this->envs = $this->getUpdatedEnvs($user);
       foreach ($this->envs as $_env)
       {
-        $env = new Env();
-        $env->setAccessVm($_env["accessvm"]);
-        $env->setEnvName($_env["name"]);
-        $env->setHostedOn($_env["hostedOn"]);
-        $env->setDescr($_env["description"]);
-        $env->setOwner($user->user);
-        $env->save();
-        $oldVms = Doctrine::getTable('Vms')->findSpecificVms($user->user, $_env["accessvm"]);
-        foreach ($oldVms as $vm)
-        {
-          $vm->delete();
-        }
         foreach ($_env["vms"] as $_vms)
         {
           $vms = new Vms;
-          $vms->setAccessVmId($_env["accessvm"]);
-          $vms->setAccessVmAlias($_env["name"]);
+          $vms->setAccessVmFullName($_env["fullName"]);          
+          $vms->setAccessVmShortName($_env["shortName"]);
+          $vms->setAccessVmIp($_env["accessvm"]);
+          $vms->setAccessVmHostedOn($_env["hostedOn"]);          
+          $vms->setVmName($_vms["name"]);
           $name = preg_split("/:/", $_vms["host"]);
-          $vms->setVmName($name[0]);
+          $vms->setVmHost($name[0]);
           if(preg_match("/\((.*?)\)/", $name[1], $ip)){
             $vms->setVmIp($ip[1]);
           }
+          $port = preg_split("/\./", $vms->getVmIp());
+          if(array_key_exists(3, $port)){
+            $vms->setVmPort('122'.$port[3]);
+          }                   
           $vms->setVmOs($_vms["type"]);
-          $vms->setDescription($_vms["name"]);
           $vms->setOwner($user->user);
           $vms->save();
         }
@@ -114,7 +108,7 @@ EOF;
     $_envs = $this->getEnvs($html, $user); //Retrive env names for current user
     foreach ($_envs as $key => $value)
     {
-      curl_setopt($curl, CURLOPT_URL, 'https://tcportal.deu.hp.com/cgi-bin/list_venvs_dc3.pl?name=' . $value["name"]);
+      curl_setopt($curl, CURLOPT_URL, 'https://tcportal.deu.hp.com/cgi-bin/list_venvs_dc3.pl?name=' . $value["shortName"]);
       $html = curl_exec($curl);
       $_vms = $this->getVms($html);
       $_envs[$key]['accessvm'] = $_vms["accessvm"];
@@ -128,20 +122,22 @@ EOF;
   {
     $_envs = array();
     preg_match_all("'<tr class=\"display_body\">(.*?)</tr>'si", $contents, $result);
-
+    
     foreach ($result[1] as $value)
     {
       $cur_env = array();
       if (preg_match("/" . $user->full_name . "/", $value)) {
         preg_match_all("'<td class=\"display_row\">(.*?)</td>'si", $value, $res);
-        preg_match("'<div class=\"display_status\">(.*?)</div>'si", $value, $descr);
+        preg_match("'<div class=\"display_status\">(.*?)</div>'si", $value, $descr); 
+        
         $res[1][] = $descr[1];
         $res[1][0] = preg_replace("'<div(.*?)</div>'si", "", $res[1][0]);
         $res[1][0] = preg_replace('/\n[ \t]+/', '', strip_tags($res[1][0]));
-        $cur_env["name"] = $res[1][0];
+        
+        $cur_env["shortName"] = $res[1][0];
         $cur_env["hostedOn"] = $res[1][1];
         $cur_env["owner"] = $res[1][2];
-        $cur_env["description"] = $res[1][3];
+        $cur_env["fullName"] = $res[1][3];
         $_envs[] = $cur_env;
       }
     }

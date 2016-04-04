@@ -6,7 +6,7 @@
         <label id="lopt"><?php echo $parameters->getParamsName() ?> 
         <?php if (preg_match("/,/", $parameters->getParamsValue())): ?>         
         <select name="<?= $parameters->getParamsName() ?>">
-              <?php foreach (preg_split("/,/", $parameters->getParamsValue()) as $param): ?>
+              <?php foreach ($parameters->getParamsValueArray() as $param): ?>
                 <?php if (preg_match("/list/", $param)): ?>
                   <option id="lst" value="<?= $param ?>"><?= $param ?></option>
                 <?php else: ?>

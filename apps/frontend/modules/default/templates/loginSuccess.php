@@ -7,9 +7,7 @@
     <link href="/sfDoctrinePlugin/css/default.css" type="text/css" rel="stylesheet" />
   </head>
   <body>
-
     <div id="sf_admin_container">
-
       <div style="position: fixed; top: 50%; left: 50%; margin-top: -100px; margin-left: -150px;">
         <form action="<?php echo url_for('default/login') ?>" method="post">
           <table>
@@ -17,7 +15,7 @@
               <tr><th colspan="2">Login into the darkness</th></tr>
             </thead>
             <tfoot>
-              <tr><td></td><td><input type="submit" value="Вход" /></td></tr>
+              <tr><td></td><td><input type="submit" value="Login" /></td></tr>
             </tfoot>
             <tbody>
               <tr><td>Login:</td><td><?php echo $form['login'] ?></td></tr>

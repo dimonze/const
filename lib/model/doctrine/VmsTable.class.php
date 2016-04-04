@@ -18,11 +18,21 @@ class VmsTable extends Doctrine_Table
     return Doctrine_Core::getTable('Vms');
   }
 
-  public function findSpecificVms($user, $accessvm)
+  public function getDynamicVms($user)
   {
-    return $this->createQuery('us')
-                    ->where(('us.owner LIKE ?'), $user)
-                    ->andWhere(('us.access_vm_id LIKE ?'), $accessvm)
+    return $this->createQuery('v')
+                    ->where(('v.owner LIKE ?'), $user)
+                    ->andWhere('v.static LIKE 0')
+                    ->execute();
+  }
+  
+  public function getEnvList($user)
+  {
+    return $this->createQuery('v')
+                    ->select('v.access_vm_short_name, v.access_vm_ip')
+                    ->where(('v.owner LIKE ?'), $user)
+                    ->andWhere('v.static LIKE 0')
+                    ->groupBy('v.access_vm_ip')
                     ->execute();
   }
 

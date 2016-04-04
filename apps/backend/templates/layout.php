@@ -11,34 +11,31 @@
   <body>
     <ul class="backend_nav">
       <li<?= $sf_params->get('module') == 'users' ? ' class="current"' : '' ?>>
-        <?= link_to('Пользователи', '@users') ?>
-      </li>
-      <li<?= $sf_params->get('module') == 'env' ? ' class="current"' : '' ?>>
-        <?= link_to('Окружение', '@env') ?>
+        <?= link_to('Users', '@users') ?>
       </li>
       <li<?= $sf_params->get('module') == 'vms' ? ' class="current"' : '' ?>>
-        <?= link_to('Виртуальные машины', '@vms') ?>
+        <?= link_to('VMs', '@vms') ?>
       </li>
       <li<?= $sf_params->get('module') == 'actions' ? ' class="current"' : '' ?>>
-        <?= link_to('Действия', '@actions') ?>
+        <?= link_to('Actions', '@actions') ?>
       </li>
       <li<?= $sf_params->get('module') == 'actions' ? ' class="current"' : '' ?>>
-        <?= link_to('Параметры', '@parameters') ?>
+        <?= link_to('Parameters', '@parameters') ?>
       </li>
       <li<?= $sf_params->get('module') == 'templates' ? ' class="current"' : '' ?>>
-        <?= link_to('Шаблоны', '@templates') ?>
+        <?= link_to('Templates', '@templates') ?>
       </li>
       <li<?= $sf_params->get('module') == 'cron_task' ? ' class="current"' : '' ?>>
-        <?= link_to('Планировщик', '@cron_task') ?>
+        <?= link_to('Scheduler', '@cron_task') ?>
       </li>
       <li<?= $sf_params->get('module') == 'current_state' ? ' class="current"' : '' ?>>
-        <?= link_to('Активные сессии', '@current_state') ?>
+        <?= link_to('Running_actions', '@current_state') ?>
       </li>
       <li style="font-style: italic;">
-        <?= link_to('Выход', 'default/logout') ?>
+        <?= link_to('Logout', 'default/logout') ?>
       </li>
       <li style="font-style: italic; position: absolute; right: 0px; margin-right: 15px;">
-        Добро пожаловать, <strong><?= $sf_user->getAttribute('username') ?></strong>!
+        Welcome, <strong><?= $sf_user->getAttribute('username') ?></strong>!
       </li>
     </ul>
     <?php echo $sf_content ?>
