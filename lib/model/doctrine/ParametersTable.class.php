@@ -23,7 +23,8 @@ class ParametersTable extends Doctrine_Table
     $resArray = array();
     $res = $this->createQuery('us')
             ->where(('us.params_type LIKE ?'), $type)
-            ->orWhere('us.params_type LIKE "general"')
+            ->andWhere('us.optional LIKE 1')
+            ->orWhere('us.params_type LIKE "general"') 
             ->andWhere('us.optional LIKE 1')
             ->execute();
     foreach ($res as $value)

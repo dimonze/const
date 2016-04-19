@@ -19,7 +19,10 @@
 }
 
 .reindex {
-  cursor: pointer
+  cursor: pointer;
+}
+.checkTasksState{
+  cursor: pointer;
 }
 
 .vmMenu {
@@ -70,14 +73,24 @@
   display: none;
 }
 
+.loadsmallState{
+  display: none;
+}
+
 .options {
   vertical-align: top;
   display: inline-block;
   top: 10em;
 }
 
-
 .output{
+  position: relative;
+  left: auto;
+  display: block;
+  margin: 2em;
+}
+
+.details{
   position: relative;
   left: auto;
   display: block;

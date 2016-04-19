@@ -23,4 +23,72 @@ class Actions extends BaseActions
     }
   }
 
+  public function getPreparedAction($options)
+  {
+    $result = $this->getActionArray($options);
+    return $this->setDownloadLinks($options, $result);
+  }
+
+  private function replaceVariablesWithValue($options)
+  {
+    $result = $this->getSampleAct();    
+    foreach ($options as $key => $value)
+    {
+      $key = "/%" . $key . "%/";
+      $result = preg_replace($key, $value, $result);
+    }
+    return $result;
+  }
+
+  private function getActionArray($options)
+  {
+    $outArray = array();
+    $actArray = preg_split("/:\|:/", preg_replace("/[\n\r]/", "", $this->replaceVariablesWithValue($options)));
+
+    foreach ($actArray as $act)
+    {
+      if (($key = $this->getActionKey($act, 'key')) != NULL) {
+
+        $outArray[$key][] = $this->getActionKey($act, 'value');
+      }
+    }
+    return $outArray;
+  }
+
+  private function getActionKey($act, $type)
+  {
+    if ($type == 'key') {
+      return preg_match('/_(.[a-zA-Z]+)\(/', $act, $act) ? trim($act[1]) : NULL;
+    } else {
+      return preg_match('/\((.+)\)/', $act, $act) ? trim($act[1]) : NULL;
+    }
+  }
+
+  private function setDownloadLinks($options, $act)
+  {
+    $links = array();
+    $reslt = false;
+    if(array_key_exists('packageLocationFinal', $act)){
+      $links = $this->getDownladLinksArray(preg_split('/;/', $act['packageLocationFinal'][0]));
+      $reslt = array_key_exists('VERSION', $options) ? $links[$options['VERSION']] : false;
+      $act['sshexec'] = preg_replace('/%packageFinal%/', $reslt, $act['sshexec']);
+      return $act;
+    }else{
+      return $act;
+    }
+  }
+  
+  private function getDownladLinksArray($links)
+  {
+    $result = array();
+    $temp = NULL;
+    foreach ($links as $value)
+    {
+      if(!preg_match("/,/", $value)) {continue;}
+      $temp = preg_split('/,/', $value);      
+      $result[trim($temp[1])] = trim($temp[0]);
+    }
+    return $result;
+  }
+
 }

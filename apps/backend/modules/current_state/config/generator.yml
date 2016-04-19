@@ -14,7 +14,8 @@ generator:
     config:
       actions: ~
       fields:  ~
-      list:    ~
+      list:    
+        display:            [id, =vm_name, action_name, state, owner]
       filter:  ~
       form:    ~
       edit:    ~

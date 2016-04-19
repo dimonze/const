@@ -17,7 +17,7 @@ generator:
          id:                 { label: 'ID' }
       list:    
         object_actions: {_edit: ~}
-        display:            [id, =action_name, sample_act]
+        display:            [id, =action_name, description, public, owner]
       filter:  ~
       form:    ~   
       edit:    

@@ -39,7 +39,9 @@ EOF;
     // initialize the database connection
     $databaseManager = new sfDatabaseManager($this->configuration);
     $connection = $databaseManager->getDatabase($options['connection'])->getConnection();
-
+    $this->sshUser = array();
+    $this->sshPass = array();
+    $this->sshAV = array();
     $this->envs = array();
     if ($options['users'] == "_all") {
       $this->_users = Doctrine::getTable('Users')->findAll();
@@ -48,12 +50,15 @@ EOF;
     }
     foreach ($this->_users as $user)
     {
-      if(strlen($user->full_name) < 3){
+      if (strlen($user->full_name) < 3) {
         continue;
       }
       $oldVms = Doctrine::getTable('Vms')->getDynamicVms($user->user);
       foreach ($oldVms as $vms)
       {
+        $this->sshUser[$vms->getVmName()] = $vms->getSshUser();
+        $this->sshPass[$vms->getVmName()] = $vms->getSshPass();
+        $this->sshAV[$vms->getVmName()] = $vms->getAccessVmFullName();
         $vms->delete();
       }
       $this->envs = $this->getUpdatedEnvs($user);
@@ -62,21 +67,45 @@ EOF;
         foreach ($_env["vms"] as $_vms)
         {
           $vms = new Vms;
-          $vms->setAccessVmFullName($_env["fullName"]);          
+          if (array_key_exists($_vms["name"], $this->sshAV)) {
+            $vms->setAccessVmFullName($this->sshAV[$_vms["name"]]);
+          }
           $vms->setAccessVmShortName($_env["shortName"]);
           $vms->setAccessVmIp($_env["accessvm"]);
-          $vms->setAccessVmHostedOn($_env["hostedOn"]);          
+          $vms->setAccessVmHostedOn($_env["hostedOn"]);
           $vms->setVmName($_vms["name"]);
           $name = preg_split("/:/", $_vms["host"]);
           $vms->setVmHost($name[0]);
-          if(preg_match("/\((.*?)\)/", $name[1], $ip)){
+          if (preg_match("/\((.*?)\)/", $name[1], $ip)) {
             $vms->setVmIp($ip[1]);
           }
           $port = preg_split("/\./", $vms->getVmIp());
-          if(array_key_exists(3, $port)){
-            $vms->setVmPort('122'.$port[3]);
-          }                   
+          if (array_key_exists(3, $port)) {
+            $vms->setVmPort('122' . $port[3]);
+          }
           $vms->setVmOs($_vms["type"]);
+          if (array_key_exists($_vms["name"], $this->sshUser)) {
+            if (strlen($this->sshUser[$_vms["name"]]) < 3) {
+              if ($_vms["type"] != 'linux') {
+                $vms->setSshUser('Administrator');
+                $vms->setSshPass('installed');
+              } else {
+                $vms->setSshUser('root');
+                $vms->setSshPass('installed');
+              }
+            } else {
+              $vms->setSshUser($this->sshUser[$_vms["name"]]);
+              $vms->setSshPass($this->sshPass[$_vms["name"]]);
+            }
+          } else {
+            if ($_vms["type"] != 'linux') {
+              $vms->setSshUser('Administrator');
+              $vms->setSshPass('installed');
+            } else {
+              $vms->setSshUser('root');
+              $vms->setSshPass('installed');
+            }
+          }
           $vms->setOwner($user->user);
           $vms->save();
         }
@@ -122,18 +151,18 @@ EOF;
   {
     $_envs = array();
     preg_match_all("'<tr class=\"display_body\">(.*?)</tr>'si", $contents, $result);
-    
+
     foreach ($result[1] as $value)
     {
       $cur_env = array();
       if (preg_match("/" . $user->full_name . "/", $value)) {
         preg_match_all("'<td class=\"display_row\">(.*?)</td>'si", $value, $res);
-        preg_match("'<div class=\"display_status\">(.*?)</div>'si", $value, $descr); 
-        
+        preg_match("'<div class=\"display_status\">(.*?)</div>'si", $value, $descr);
+
         $res[1][] = $descr[1];
         $res[1][0] = preg_replace("'<div(.*?)</div>'si", "", $res[1][0]);
         $res[1][0] = preg_replace('/\n[ \t]+/', '', strip_tags($res[1][0]));
-        
+
         $cur_env["shortName"] = $res[1][0];
         $cur_env["hostedOn"] = $res[1][1];
         $cur_env["owner"] = $res[1][2];
@@ -158,7 +187,7 @@ EOF;
         $result[1][0] = "win32";
       } else if (preg_match_all("/linux/", $result[1][0])) {
         $result[1][0] = "linux";
-      }else{
+      } else {
         $result[1][0] = "disabled";
       }
 

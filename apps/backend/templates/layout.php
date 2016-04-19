@@ -19,7 +19,7 @@
       <li<?= $sf_params->get('module') == 'actions' ? ' class="current"' : '' ?>>
         <?= link_to('Actions', '@actions') ?>
       </li>
-      <li<?= $sf_params->get('module') == 'actions' ? ' class="current"' : '' ?>>
+      <li<?= $sf_params->get('module') == 'parameters' ? ' class="current"' : '' ?>>
         <?= link_to('Parameters', '@parameters') ?>
       </li>
       <li<?= $sf_params->get('module') == 'templates' ? ' class="current"' : '' ?>>
@@ -33,6 +33,9 @@
       </li>
       <li style="font-style: italic;">
         <?= link_to('Logout', 'default/logout') ?>
+      </li>
+      <li style="font-style: italic;">
+        <?= link_to('Site', '/') ?>
       </li>
       <li style="font-style: italic; position: absolute; right: 0px; margin-right: 15px;">
         Welcome, <strong><?= $sf_user->getAttribute('username') ?></strong>!

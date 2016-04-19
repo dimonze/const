@@ -6,12 +6,20 @@ homepage:
   url:   /
   param: { module: page, action: index }
   
+current_state:
+  url:   /current_state/
+  param: { module: current_state, action: index }
+
+show_result:
+  url:   /showRes/
+  param: { module: current_state, action: result }
+  
 env:
   url:   /env/:usuer_name/
   param: { module: env, action: index }
 
 Cron_task:
-  url:   /Cron_task/
+  url:   /cron_task/
   param: { module: Cron_task, action: index }
   
 vms:
@@ -19,7 +27,7 @@ vms:
   param: { module: vms, action: index }
 
 actions:
-  url:   /actions/:usuer_name/
+  url:   /actions/
   param: { module: actions, action: index }
   
 actionsExec:

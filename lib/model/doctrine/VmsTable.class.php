@@ -23,6 +23,7 @@ class VmsTable extends Doctrine_Table
     return $this->createQuery('v')
                     ->where(('v.owner LIKE ?'), $user)
                     ->andWhere('v.static LIKE 0')
+                    ->orderBy('v.vm_name')
                     ->execute();
   }
   

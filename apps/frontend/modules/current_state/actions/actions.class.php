@@ -10,13 +10,57 @@
  */
 class current_stateActions extends sfActions
 {
- /**
-  * Executes index action
-  *
-  * @param sfRequest $request A request object
-  */
+
+  /**
+   * Executes index action
+   *
+   * @param sfRequest $request A request object
+   */
   public function executeIndex(sfWebRequest $request)
   {
-    $this->forward('default', 'module');
+    self::chekcStatus();
+
+    $this->tasks = Doctrine::getTable('Current_state')->getAllTasks(sfContext::getInstance()->getUser()->getAttribute("username"));
   }
+
+  public function executeResult(sfWebRequest $request)
+  {
+    self::chekcStatus();
+    $id = filter_input(INPUT_POST, 'id');
+    $this->task = Doctrine::getTable('Current_state')->findOneBy('id', $id);
+    $this->node = Doctrine::getTable('vms')->findOneBy('vm_name', $this->task->getVmName());
+    $ssh = new sshControl(NULL, $this->node);
+    $this->output = $ssh->checkExecutionStatus($this->task->getOutputPath());
+    
+  }
+
+  public function chekcStatus()
+  {
+    $this->tasks = Doctrine::getTable('Current_state')->getInprogressTasks(sfContext::getInstance()->getUser()->getAttribute("username"));
+
+
+    foreach ($this->tasks as $task)
+    {
+      $this->node = Doctrine::getTable('vms')->findOneBy('vm_name', $task->getVmName());
+      $ssh = new sshControl(NULL, $this->node);
+      $result = $ssh->checkExecutionStatus($task->getOutputPath());
+      //$task->setOutput($result);
+      if ($ssh->checkExecutionStatusTrue($task->getOutputPath())) {
+        $task->setState('done');
+        //$task->setOutput($ssh->getErrors());
+        //$ssh->cleanUpSsh($task->getCleanupCommand());
+        $task->setExecutionTime($ssh->checkExecutionTime($task->getOutputPath()));
+        if (strlen($task->getPostAction()) > 0) {
+          $ssh->execAllPost(unserialize($task->getPostAction()));
+        }
+        $task->save();
+      }else if(strlen($task->getOutput()) > 1){
+        $task->setState('failed');
+        $task->save();
+      } else {
+        $task->save();
+      }
+    }
+  }
+
 }

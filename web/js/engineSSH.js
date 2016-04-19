@@ -1,8 +1,34 @@
 $(function () {
+  setInterval(function () {
+    var listTask = $("#showDetails").find('li');
+    listTask.each(function (key, value) {
+      if ($(value).attr('id') == 'in progress') {
+        $.post('/current_state/', {},
+                function (data)
+                {
+                  $('#showDetails').html(data);
+                  $('.output').show();
+                  $('#showDetails a').click(function (event, ui) {
+                    $('.loadsmallState').show();
+                    var id = $(event.target).attr('id');
+                    $.post('/showRes/', {id: id},
+                    function (data)
+                    {
+                      $('.details').html(data);
+                      $('.loadsmallState').hide();
+                      $('.details').show();
+                    });
+                  });
+                });
+      }
+    });
+
+  }, 120000);
+
   //Re-index method
   $('.reindex').click(function (event, ui) {
     $('.loadsmall').show();
-    $.get("/Cron_task/", function (data) {
+    $.get("/cron_task/", function (data) {
       $.get("/", function (data) {
         $('.content').html(data);
         $('.loadsmall').hide();
@@ -30,6 +56,7 @@ $(function () {
     var list = $("#selectableVmList").find('li').show(); //Get list of all Vms
 
     $("#selectableVmList li").removeClass("ui-selected");
+    $('.details').hide();
     $(".vmMenu").show();
     $('.start').hide();
     $(".options").hide();
@@ -63,15 +90,16 @@ $(function () {
   //Selectable list function for Vms
   $('#selectableVmList li').click(function (event) {
     $("#selectableActionsList li").removeClass("ui-selected");
+    $('.details').hide();
     $('.start').hide();
     $('.options').hide();
     $('.loadingmessage').hide();
     $("#selectableActionsList li").each(function (key, value) {
-        $(value).show();
-        $("#selectableActionsList").show();
-        $(".actions").show();
-      });
-      
+      $(value).show();
+      $("#selectableActionsList").show();
+      $(".actions").show();
+    });
+
 //    if ($('#selectableVmList').find('.ui-selected').attr('title') === "disabled") {
 //      $("#selectableActionsList").hide();
 //    } else {
@@ -98,19 +126,20 @@ $(function () {
 
   //Selectable list function for Actions
   $('#selectableActionsList li').click(function (event, ui) {
+    $('.details').hide();
     $('.start').hide();
     $(event.target).find('.start').show();
     $('.option').show();
     if ($(event.target).val() === 1) {
       $(event.target).find('.loadingmessage').show();
-      $.get("/parameters/index?params_type=" + $(event.target).attr("id") + "&generalNeeded=1", function (data) {
+      $.get("/parameters/index?params_type=" + $(event.target).attr("name") + "&generalNeeded=1", function (data) {
         $(".options").html(data);
         $(event.target).find('.loadingmessage').hide();
         $(".options").show();
       });
     } else if ($(event.target).val() === 2) {
       $(event.target).find('.loadingmessage').show();
-      $.get("/parameters/index?params_type=" + $(event.target).attr("id") + "&generalNeeded=", function (data) {
+      $.get("/parameters/index?params_type=" + $(event.target).attr("name") + "&generalNeeded=", function (data) {
         $(".options").html(data);
         $(event.target).find('.loadingmessage').hide();
         $(".options").show();
@@ -122,32 +151,72 @@ $(function () {
   });
 
   //Start action function
-  $(".start").click(function () {
-    var startedAction = $('#selectableActionsList').find('.ui-selected').find('.loadingmessage');    
-    $('.option').hide();    
- 
+  $('.start').click(function () {
+    $('.details').hide();
+    var startedAction = $('#selectableActionsList').find('.ui-selected').find('.loadingmessage');
+    $('.option').hide();
+    var link = '';
     var systemVariables = {};
-    systemVariables['host'] = $('#selectableVmList').find('.ui-selected').attr('id');
-    systemVariables['port'] = $('#selectableVmList').find('.ui-selected').attr('name');
-    systemVariables['user'] = null;
-    systemVariables['pass'] = null;
-    systemVariables['action'] = $('#selectableActionsList').find('.ui-selected').attr('id');
-    systemVariables['ostype'] = $('#selectableVmList').find('.ui-selected').attr('title'); 
-    
+    systemVariables['vm_name'] = $('#selectableVmList').find('.ui-selected').attr('name');
+    systemVariables['action'] = $('#selectableActionsList').find('.ui-selected').attr('name');
+
     var inputs = $('.options :input');
     var options = {};
     inputs.each(function () {
       options[this.name] = $(this).val();
     });
     startedAction.show();
-    $.post('/frontend_dev.php/exec/', {systemVariables: systemVariables, options: options},
-    function (data)
-    {
-      $('.output').html(data);
-      startedAction.hide();
+    $.post('/exec/', {systemVariables: systemVariables, options: options}, function (data) {
+      $.post('/current_state/', {},
+              function (data)
+              {
+                $('#showDetails').html(data);
+                $('.loadsmallState').hide();
+                $('.output').show();
+                startedAction.hide();
+                $('#showDetails a').click(function (event, ui) {
+                  $('.loadsmallState').show();
+                  var id = $(event.target).attr('id');
+                  $.post('/showRes/', {id: id},
+                  function (data)
+                  {
+                    $('.details').html(data);
+                    $('.loadsmallState').hide();
+                    $('.details').show();
+                  });
+                });
+              });
     });
     $('.output').show();
   });
+
+
+
+  $('.checkTasksState').click(function () {
+    $('.details').hide();
+    $('.loadsmallState').show();
+    $.post('/current_state/', {},
+            function (data)
+            {
+              $('#showDetails').html(data);
+              $('.loadsmallState').hide();
+              $('.output').show();
+              $('#showDetails a').click(function (event, ui) {
+                $('.loadsmallState').show();
+                var id = $(event.target).attr('id');
+                $.post('/showRes/', {id: id},
+                function (data)
+                {
+                  $('.details').html(data);
+                  $('.loadsmallState').hide();
+                  $('.details').show();
+                });
+              });
+            });
+  });
+
+
+
 });
 
 

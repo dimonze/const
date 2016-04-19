@@ -63,6 +63,12 @@ Vms:
     vm_description: text
     vm_state: integer(4)
     vm_snapshots: text
+    ssh_user: 
+      type: string(100)
+      notnull: true
+    ssh_pass:
+      type: string(100)
+      notnull: true
     static: 
       type: boolean
       notnull: true
@@ -158,10 +164,25 @@ Current_state:
       unsigned: true
       primary: true
       autoincrement: true
-    session_name:
+    vm_name:
       type: string(100)
-      notnull: true      
-    description: text
+      notnull: true   
+    action_name:
+      type: string(100)
+      notnull: true
+    output:
+      type: text(5000)
+    outputPath:
+      type: string(500)
+    state:
+      type: string(100)
+      notnull: true
+    execution_time:
+      type: string(100)
+    cleanup_command:
+      type: string(500)
+    post_action:
+      type: text(5000)
     owner:
       type: string(100)
       notnull: true      
