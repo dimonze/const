@@ -11,4 +11,5 @@
 /web/sitemap*
 /web/uploads/*
 /web/uploads_old/
+/config/databases.yml
 sftp-config.json
