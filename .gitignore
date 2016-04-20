@@ -12,4 +12,5 @@
 /web/uploads/*
 /web/uploads_old/
 /config/databases.yml
+/config/ProjectConfiguration.class.php
 sftp-config.json
