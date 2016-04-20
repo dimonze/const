@@ -20,7 +20,7 @@ env:
 
 Cron_task:
   url:   /cron_task/
-  param: { module: Cron_task, action: index }
+  param: { module: cron_task, action: index }
   
 vms:
   url:   /vms/:env_name/
