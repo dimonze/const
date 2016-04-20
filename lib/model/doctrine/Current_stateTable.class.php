@@ -31,7 +31,7 @@ class Current_stateTable extends Doctrine_Table
     return $this->createQuery('us')
                     ->where(('us.owner LIKE ?'), $user)
                     ->orderBy('FIELD(state, "in progress") desc, ID desc')
-                    ->limit('20')
+                    ->limit('5')
                     ->execute();
   }
   

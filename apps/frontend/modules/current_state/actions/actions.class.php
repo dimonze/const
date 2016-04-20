@@ -44,11 +44,9 @@ class current_stateActions extends sfActions
       $this->node = Doctrine::getTable('vms')->findOneBy('vm_name', $task->getVmName());
       $ssh = new sshControl(NULL, $this->node);
       $result = $ssh->checkExecutionStatus($task->getOutputPath());
-      //$task->setOutput($result);
       if ($ssh->checkExecutionStatusTrue($task->getOutputPath())) {
         $task->setState('done');
-        //$task->setOutput($ssh->getErrors());
-        //$ssh->cleanUpSsh($task->getCleanupCommand());
+        $ssh->cleanUpSsh($task->getCleanupCommand());
         $task->setExecutionTime($ssh->checkExecutionTime($task->getOutputPath()));
         if (strlen($task->getPostAction()) > 0) {
           $ssh->execAllPost(unserialize($task->getPostAction()));
