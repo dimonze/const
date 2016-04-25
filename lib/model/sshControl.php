@@ -32,7 +32,7 @@ class sshControl
     $this->resultFile = $resultFile;
     $this->scriptFile = $scriptFile;
     $this->tmpFile = $tmpFile;
-    $this->tempFile = 'd:\tmp\file.tmp';
+    $this->tempFile = '/tmp/file.tmp';
     $this->initConnection();
   }
 
